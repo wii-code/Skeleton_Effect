@@ -14,8 +14,9 @@ class ApiService {
       var statusCode = response.statusCode;
 
       if (statusCode == 200) {
-        var jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        var jsonResponse = json.decode(response.body);
         print("That is the response : $jsonResponse");
+        return jsonResponse;
       }else {
         print("Another status response : $statusCode");
       }

@@ -32,85 +32,129 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  int _counter = 0;
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  Future postFuture;
+
   ApiService api = new ApiService();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    postFuture =  api.getPosts();
   }
 
-  getData()async{
-    var response = await api.getPosts();
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              child: Shimmer.fromColors(
-                  baseColor: Colors.grey,
-                  highlightColor: Colors.white,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        color: Colors.black,
-                        width: 70,
-                        height: 70,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+        child: FutureBuilder(
+          future: postFuture,
+            builder:(BuildContext context, AsyncSnapshot snapshot){
+              if (snapshot.data == null) {
+                return ListView.builder(
+                  itemCount: 20 ,
+                  scrollDirection: Axis.vertical,
+                  itemBuilder: (context, index) {
+                    return SizedBox(
+                      child: Shimmer.fromColors(
+                          baseColor: Colors.grey,
+                          highlightColor: Colors.white,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  color: Colors.black,
+                                  width: 110,
+                                  height: 70,
+                                ),
+
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Container(
+                                      color: Colors.black,
+                                      width: 250,
+                                      height: 10,
+                                      // width: MediaQuery.of(context).size.width/2,
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Container(
+                                      color: Colors.black,
+                                      width: 190,
+                                      height: 10,
+                                      // width: MediaQuery.of(context).size.width/2,
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Container(
+                                      color: Colors.black,
+                                      width: 100,
+                                      height: 10,
+                                      // width: MediaQuery.of(context).size.width/2,
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          )),
+                    );
+                  },
+                );
+              } else {
+                return ListView.builder(
+                  itemCount: snapshot.data.length ,
+                  scrollDirection: Axis.vertical,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          SizedBox(
-                            height: 10,
-                          ),
                           Container(
                             color: Colors.black,
-                            width: 250,
-                            height: 10,
-                            // width: MediaQuery.of(context).size.width/2,
+                            width: 110,
+                            height: 110,
+                            child: Image(image: NetworkImage("https://i.pinimg.com/236x/c1/ee/28/c1ee28b9c07e6d3568128dcbfcff2a1a.jpg"),fit: BoxFit.cover,),
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Container(
-                            color: Colors.black,
-                            width: 190,
-                            height: 10,
-                            // width: MediaQuery.of(context).size.width/2,
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Container(
-                            color: Colors.black,
-                            width: 100,
-                            height: 10,
-                            // width: MediaQuery.of(context).size.width/2,
-                          ),
-                          SizedBox(
-                            height: 10,
+                          SizedBox(width: 10,),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+
+                              Text(snapshot.data[index]["title"],  overflow: TextOverflow.ellipsis,),
+                                SizedBox(
+                                  height: 10,
+                                ),
+
+                               Text(snapshot.data[index]["body"],overflow: TextOverflow.ellipsis,),
+                                SizedBox(
+                                  height: 10,
+                                ),
+
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                    ],
-                  )),
-            ),
-            SizedBox(height: 10,),
-          ],
+                    );
+                  },
+                );
+              }
+            }
+
         ),
       ),
       // This trailing comma makes auto-formatting nicer for build methods.
